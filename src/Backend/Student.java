@@ -5,16 +5,19 @@ import java.util.ArrayList;
 public class Student extends User {
     private ArrayList<String> enrolledCourses;
     private ArrayList<StudentCourseProgress> coursesProgress;
+  private ArrayList<StudentQuizAttempt> attempts;
 
     public Student(String userName, int userId, String email, String passwordHash) {
         super(userName, userId, email, passwordHash, "student");
         this.enrolledCourses = new ArrayList<>();
         this.coursesProgress = new ArrayList<>();
+        this.attempts = new ArrayList<>();
     }
     public Student(String userName, String email, String passwordHash) {
         super(userName, email, passwordHash, "student");
         this.enrolledCourses = new ArrayList<>();
         this.coursesProgress = new ArrayList<>();
+        this.attempts = new ArrayList<>();
     }
     // Enroll student to a course
     public void addCourse(String courseId) {
@@ -42,7 +45,7 @@ public class Student extends User {
         }
     }*/
 
-    public void addLessonCompleted(String courseId, String lessonId) {
+    /*public void addLessonCompleted(String courseId, String lessonId) {
 
         StudentCourseProgress target = null;
         for (StudentCourseProgress p : coursesProgress) {
@@ -61,7 +64,21 @@ public class Student extends User {
         if (!target.getCompletedLessons().contains(lessonId)) {
             target.getCompletedLessons().add(lessonId);
         }
+    }*/
+    public void addLessonCompleted(String courseId, String lessonId) {
+        for (StudentCourseProgress p : coursesProgress) {
+            if (p.getCourseId().equals(courseId)) {
+                if (!p.getCompletedLessons().contains(lessonId)) {
+                    p.getCompletedLessons().add(lessonId);
+                }
+                return;
+            }
+        }
+        StudentCourseProgress newProgress = new StudentCourseProgress(courseId);
+        newProgress.getCompletedLessons().add(lessonId);
+        coursesProgress.add(newProgress);
     }
+
 
 
     public boolean isLessonCompleted(String courseId, String lessonId) {
@@ -104,6 +121,13 @@ public class Student extends User {
     }
     public void setCoursesProgress(ArrayList<StudentCourseProgress> coursesProgress) {
         this.coursesProgress = coursesProgress;
+    }
+    public void addQuizAttempt(StudentQuizAttempt attempt) {
+
+        attempts.add(attempt);
+    }
+    public ArrayList<StudentQuizAttempt> getQuizAttempts() {
+        return attempts;
     }
 
 }

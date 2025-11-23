@@ -8,6 +8,7 @@ public class Lesson {
     private String title;
     private String content;
     private ArrayList<String> resources = new ArrayList<>();
+   private Quiz quiz;
 
     public Lesson(String lessonId, String title, String content) {
         this.lessonId = lessonId;
@@ -33,9 +34,13 @@ public class Lesson {
         resources.add(resource);
     }
 
-    //public Object getResource() {
-        // new UnsupportedOperationException("Not supported yet."); // Generated from 
-    //}
+    public Quiz getQuiz() {
+        return quiz;
+    }
+
+    public void setQuiz(Quiz quiz) {
+        this.quiz = quiz;
+    }
 
 
 }
