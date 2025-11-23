@@ -2,7 +2,10 @@
     {
         "Role": "instructor",
         "Email": "rm@gmail.com",
-        "createdCourses": ["EEU"],
+        "createdCourses": [
+            "EEU",
+            "MME"
+        ],
         "ID": 100,
         "Hash password": "58466ebdd352f801198118e294e38715f864985fd87977f348bfcd7db62e7c76",
         "Name": "Rodina Mohamed"
@@ -10,7 +13,7 @@
     {
         "Role": "student",
         "Email": "em@gmail.com",
-        "quizAttempts": [],
+        "certificates": [],
         "enrolledCourses": ["EEU"],
         "progress": [{
             "completedLessons": [
@@ -26,7 +29,7 @@
     {
         "Role": "student",
         "Email": "jm@hmail.com",
-        "quizAttempts": [],
+        "certificates": [],
         "enrolledCourses": ["EEU"],
         "progress": [{
             "completedLessons": ["AA"],
@@ -47,7 +50,7 @@
     {
         "Role": "student",
         "Email": "ghm@gmail.com",
-        "quizAttempts": [],
+        "certificates": [],
         "enrolledCourses": [],
         "progress": [],
         "ID": 104,

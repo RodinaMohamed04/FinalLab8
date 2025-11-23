@@ -57,6 +57,9 @@ public class CourseService {
                 if (u instanceof Student st) {
                     st.getEnrolledCourses().remove(courseId);
 
+                    st.getCoursesProgress().removeIf(p ->
+                            p.getCourseId().equals(courseId));
+
                 }
 
             }
@@ -95,6 +98,7 @@ public void rejectCourse(String courseId) {
     Course c = getCourseById(courseId);
     if (c != null) {
         c.setStatus("Rejected");
+        removeCourse(courseId);
         saveCourses();
     }
 }
