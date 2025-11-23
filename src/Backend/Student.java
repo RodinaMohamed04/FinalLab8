@@ -6,6 +6,7 @@ public class Student extends User {
     private ArrayList<String> enrolledCourses;
     private ArrayList<StudentCourseProgress> coursesProgress;
   private ArrayList<StudentQuizAttempt> attempts;
+    private ArrayList<Certificate> certificates = new ArrayList<>();
 
     public Student(String userName, int userId, String email, String passwordHash) {
         super(userName, userId, email, passwordHash, "student");
@@ -33,6 +34,10 @@ public class Student extends User {
         StudentCourseProgress p = new StudentCourseProgress(courseId);
         p.setCompletedLessons(completedLessons);
         coursesProgress.add(p);
+    }
+
+    public void addCertificate(Certificate cert) {
+        certificates.add(cert);
     }
 
     // Mark lesson as completed
@@ -125,6 +130,9 @@ public class Student extends User {
     public ArrayList<StudentCourseProgress> getCoursesProgress() {
         return coursesProgress;
     }
+    public ArrayList<Certificate> getCertificates() {
+        return certificates;
+    }
     public void setEnrolledCourses(ArrayList<String> enrolledCourses) {
         this.enrolledCourses = enrolledCourses;
     }
@@ -139,4 +147,7 @@ public class Student extends User {
         return attempts;
     }
 
+    public void setCertificates(ArrayList<Certificate> certificates) {
+        this.certificates = certificates;
+    }
 }

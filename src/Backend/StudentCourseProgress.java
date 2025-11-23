@@ -29,7 +29,6 @@ public class StudentCourseProgress {
         return completedLessons;
     }
 
-
 }
 
 

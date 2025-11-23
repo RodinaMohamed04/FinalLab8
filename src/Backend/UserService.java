@@ -1,6 +1,7 @@
 package Backend;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import java.time.LocalDate;
 public class UserService {
     private ArrayList<User> users;
 
@@ -60,6 +61,39 @@ public class UserService {
         User u = getUserbyID(id);
         if (u instanceof Student s) {
             s.addLessonCompleted(courseID, lessonID);
+
+            // check if student completed their course
+            CourseService cs = new CourseService();
+            Course c = cs.getCourseById(courseID);
+            if (c != null) {
+                int totalLessons = c.getLessons().size();
+                int completedLessons = 0;
+                for (StudentCourseProgress p : s.getCoursesProgress()) {
+                    if (p.getCourseId().equals(courseID)) {
+                        completedLessons = p.getCompletedLessons().size();
+                        break;
+                    }
+                }
+
+                if (completedLessons == totalLessons) {
+                    // load certificate
+                    boolean alreadyHasCert = false;
+                    for (Certificate cert : s.getCertificates()) {
+                        if (cert.getCourseId().equals(courseID)) {
+                            alreadyHasCert = true;
+                            break;
+                        }
+                    }
+
+                    if (!alreadyHasCert) {
+                        String certId = "CERT-" + System.currentTimeMillis();
+                        Certificate newCert = new Certificate(certId, s.getUserId(), courseID, LocalDate.now().toString());
+                        s.addCertificate(newCert);
+                        System.out.println("Certificate generated for student " + s.getUserName() + " for course " + courseID);
+                    }
+                }
+            }
+
             saveUsers();
         }
     }
