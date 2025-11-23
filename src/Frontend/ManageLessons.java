@@ -120,7 +120,7 @@ public class ManageLessons extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("Add Quiz");
+        jButton2.setText("Manage Quiz");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);

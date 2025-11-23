@@ -4,17 +4,19 @@
  */
 package Frontend;
 
+import Backend.Course;
 import Backend.Instructor;
 
 /**
  *
  * @author mo
  */
-public class AddQuiz extends javax.swing.JFrame {
+public class ManageQuiz extends javax.swing.JFrame {
 
     private Instructor instructor;
+    private Course course;
 
-    public AddQuiz() {
+    public ManageQuiz() {
         initComponents();
     }
 
@@ -141,8 +143,8 @@ public class AddQuiz extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        InstructorDashBoard dsh = new InstructorDashBoard(instructor);
-        dsh.setVisible(true);
+        ManageLessons ml = new ManageLessons(instructor, course);
+        ml.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -179,20 +181,21 @@ public class AddQuiz extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddQuiz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageQuiz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddQuiz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageQuiz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddQuiz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageQuiz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddQuiz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageQuiz.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AddQuiz().setVisible(true);
+                new ManageQuiz().setVisible(true);
             }
         });
     }
