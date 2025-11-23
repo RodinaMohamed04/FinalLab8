@@ -11,7 +11,7 @@ public class CourseService {
         courses = JsonDataBaseManager.readCourse();
     }
 
-    private void saveCourses() {
+    void saveCourses() {
 
         JsonDataBaseManager.saveCourse(courses);
         if (courses == null) courses = new ArrayList<>();
@@ -221,6 +221,45 @@ public void rejectCourse(String courseId) {
             }
         }
         return null;
+    }
+    public class CourseStatistics {
+    public double averageScore;
+    public double completionPercentage;
+
+    public CourseStatistics(double avg, double comp) {
+        this.averageScore = avg;
+        this.completionPercentage = comp;
+    }
+}
+    public CourseStatistics calculateCourseStatistics(String courseId) {
+        Course c = getCourseById(courseId);
+        if (c == null) return new CourseStatistics(0, 0);
+
+        int totalLessons = c.getLessons().size();
+        double totalScore = 0;
+        int totalAttempts = 0;
+        int completedLessonsCount = 0;
+
+        for (Student s : c.getStudents()) {
+            StudentCourseProgress p = s.getProgressForCourse(courseId);
+            if (p != null) completedLessonsCount += p.getCompletedLessons().size();
+
+            for (StudentQuizAttempt a : s.getQuizAttempts()) {
+                Quiz q = null;
+                for (Lesson l : c.getLessons()) {
+                    if (l.getQuiz() != null && l.getQuiz().getQuizId().equals(a.getQuizId())) q = l.getQuiz();
+                }
+                if (q != null) {
+                    totalScore += a.getScore();
+                    totalAttempts++;
+                }
+            }
+        }
+
+        double avgScore = totalAttempts == 0 ? 0 : totalScore / totalAttempts;
+        double completionPercentage = totalLessons == 0 ? 0 : (double) completedLessonsCount / (c.getStudents().size() * totalLessons) * 100;
+
+        return new CourseStatistics(avgScore, completionPercentage);
     }
 }
 

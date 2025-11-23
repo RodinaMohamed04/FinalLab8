@@ -83,4 +83,41 @@ public class QuizService {
 
         return student.isLessonCompleted(courseId, prevLessonId);
     }
+    
+    
+      public void addQuizToLesson(String courseId, String lessonId, Quiz quiz) {
+        Lesson lesson = courseService.getLessonById(courseId, lessonId);
+        if (lesson != null) {
+            lesson.setQuiz(quiz);
+            courseService.saveCourses();
+        }
+    }
+
+    public void addQuestionToQuiz(String courseId, String lessonId, Question question) {
+        Lesson lesson = courseService.getLessonById(courseId, lessonId);
+        if (lesson != null && lesson.getQuiz() != null) {
+            lesson.getQuiz().getQuestions().add(question);
+            courseService.saveCourses();
+        }
+    }
+
+    public void removeQuestionFromQuiz(String courseId, String lessonId, int questionIndex) {
+        Lesson lesson = courseService.getLessonById(courseId, lessonId);
+        if (lesson != null && lesson.getQuiz() != null) {
+            if (questionIndex >= 0 && questionIndex < lesson.getQuiz().getQuestions().size()) {
+                lesson.getQuiz().getQuestions().remove(questionIndex);
+                courseService.saveCourses();
+            }
+        }
+    }
+
+    public void updateQuestionInQuiz(String courseId, String lessonId, int questionIndex, Question newQuestion) {
+        Lesson lesson = courseService.getLessonById(courseId, lessonId);
+        if (lesson != null && lesson.getQuiz() != null) {
+            if (questionIndex >= 0 && questionIndex < lesson.getQuiz().getQuestions().size()) {
+                lesson.getQuiz().getQuestions().set(questionIndex, newQuestion);
+                courseService.saveCourses();
+            }
+        }
+    }
 }

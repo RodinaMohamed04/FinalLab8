@@ -1,0 +1,24 @@
+[{
+    "courseName": "English",
+    "students": [
+        101,
+        102
+    ],
+    "InstructorId": 100,
+    "courseId": "EEU",
+    "courseDescription": "rrrrr",
+    "lessons": [
+        {
+            "lessonId": "AA",
+            "resources": ["z"],
+            "title": "kkk",
+            "content": "uu"
+        },
+        {
+            "lessonId": "LS7",
+            "resources": ["k"],
+            "title": "L3",
+            "content": "ddd"
+        }
+    ]
+}]

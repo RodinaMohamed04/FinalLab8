@@ -108,6 +108,15 @@ public class Student extends User {
        }
        return 0;
    }
+   public StudentCourseProgress getProgressForCourse(String courseId) {
+    for (StudentCourseProgress p : coursesProgress) {
+        if (p.getCourseId().equals(courseId)) {
+            return p;
+        }
+    }
+    return null;
+}
+
 
     public ArrayList<String> getEnrolledCourses() {
         return enrolledCourses;
