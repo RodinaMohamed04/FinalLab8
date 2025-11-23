@@ -6,10 +6,6 @@ package Frontend;
 
 import Backend.Instructor;
 
-/**
- *
- * @author mo
- */
 public class InstructorInsights extends javax.swing.JFrame {
 Instructor instructor;
     public InstructorInsights() {
