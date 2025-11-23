@@ -87,13 +87,27 @@ public class Student extends User {
 
 
     public boolean isLessonCompleted(String courseId, String lessonId) {
-    for (StudentCourseProgress p : coursesProgress) {
+    /*for (StudentCourseProgress p : coursesProgress) {
         if (p.getCourseId().equals(courseId) && p.getCompletedLessons().contains(lessonId)) {
             return true;
         }
     }
     return false;
-}
+}*/
+        for (StudentCourseProgress p : coursesProgress) {
+            if (p.getCourseId().equals(courseId) && p.getCompletedLessons().contains(lessonId)) {
+                return true;
+            }
+        }
+
+        for (StudentQuizAttempt attempt : getQuizAttempts()) {
+            if (attempt.getQuizId().equals(lessonId) && attempt.isPassed()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
    /* public int getProgressPercentage(String courseId, int totalLessons) {
         for (StudentCourseProgress p : coursesProgress) {

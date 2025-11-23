@@ -12,6 +12,8 @@ public class ViewLessons extends javax.swing.JFrame {
     private Course course;
     private CourseService courseService;
     private String courseId;
+    private Quiz quiz;
+    private QuizService quizService;
 
     public ViewLessons(Student student, String courseId) {
         this.student = student;
@@ -19,7 +21,9 @@ public class ViewLessons extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
 
+
         this.courseService = new CourseService();
+        this.quizService = new QuizService();
         course = courseService.getCourseById(courseId);
 
         if (course == null) {
@@ -36,13 +40,28 @@ public class ViewLessons extends javax.swing.JFrame {
 
         ArrayList<Lesson> lessons = courseService.displayLessons(course.getCourseId());
         for (Lesson lesson : lessons) {
-            boolean completed = student.isLessonCompleted(course.getCourseId(), lesson.getLessonId());
+          /*  boolean completed = student.isLessonCompleted(course.getCourseId(), lesson.getLessonId());*/
+            boolean completed = false;
+            if (lesson.getQuiz() != null) {
+
+                for (StudentQuizAttempt attempt : student.getQuizAttempts()) {
+                    if (attempt.getQuizId().equals(lesson.getQuiz().getQuizId()) && attempt.isPassed()) {
+                        completed = true;
+                        break;
+                    }
+                }
+            } else {
+
+                completed = student.isLessonCompleted(course.getCourseId(), lesson.getLessonId());
+            }
+
             model.addRow(new Object[]{
                     lesson.getLessonId(),
                     lesson.getTitle(),
                     completed ? "Yes" : "No"
             });
         }
+
         jTable1.setModel(model);
     }
 
@@ -134,9 +153,10 @@ public class ViewLessons extends javax.swing.JFrame {
         if (confirm == JOptionPane.YES_OPTION) {
             Lesson lesson = courseService.getLessonById(course.getCourseId(), lessonId);
             if (lesson.getQuiz() != null) {
-              //  QuizPage qp = new QuizPage(student, lesson, course);
-              //  qp.setVisible(true);
-               // this.setVisible(false);
+                quiz = lesson.getQuiz();
+                QuizPage qp = new QuizPage(student,quiz,quizService);
+              qp.setVisible(true);
+               this.setVisible(false);
             } else {
                 JOptionPane.showMessageDialog(this, "No quiz for this lesson!");
             }

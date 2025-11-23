@@ -4,13 +4,10 @@
  */
 package Frontend;
 
-import Backend.Course;
-import Backend.Instructor;
-import Backend.Lesson;
-import Backend.Question;
-import Backend.Quiz;
-import Backend.QuizService;
+import Backend.*;
+
 import java.util.ArrayList;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class ManageQuiz extends javax.swing.JFrame {
@@ -28,8 +25,19 @@ public class ManageQuiz extends javax.swing.JFrame {
         this.lesson = lesson;
         initComponents();
         this.setLocationRelativeTo(null);
+
+        quizService = new QuizService();
+
+        if (lesson.getQuiz() == null) {
+            quiz = new Quiz("quiz_" + lesson.getLessonId(), lesson.getLessonId(), new ArrayList<>(), 50);
+            quizService.addQuizToLesson(course.getCourseId(), lesson.getLessonId(), quiz);
+        } else {
+            quiz = lesson.getQuiz();
+        }
+
+       // loadQuiz();
     }
-    private void loadQuiz() {
+    /*private void loadQuiz() {
     DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
 
@@ -38,9 +46,75 @@ public class ManageQuiz extends javax.swing.JFrame {
             ArrayList<Question> questions = quiz.getQuestions();
             for (int i = 0; i < questions.size(); i++) {
                 Question q = questions.get(i);
-                model.addRow(new Object[]{i + 1, q.getQuestionText(), String.join(", ", q.getOptions()), q.getCorrectAnswer()});
+                //model.addRow(new Object[]{i + 1, q.getQuestionText(), String.join(", ", q.getOptions()), q.getCorrectAnswer()});
+                model.addRow(new Object[]{
+                        i + 1,
+                        q.getQuestionText(),
+                        q.getOptions()[0],
+                        q.getOptions()[1],
+                        q.getOptions()[2],
+                        q.getOptions()[3],
+                        q.getCorrectAnswer()
+                });
             }
         }
+    }*/
+
+    private void addQuestion() {
+        JTextField questionField = new JTextField();
+        JTextField optionA = new JTextField();
+        JTextField optionB = new JTextField();
+        JTextField optionC = new JTextField();
+        JTextField optionD = new JTextField();
+        JTextField correct = new JTextField();
+
+        Object[] message = {
+                "Question:", questionField,
+                "Option A:", optionA,
+                "Option B:", optionB,
+                "Option C:", optionC,
+                "Option D:", optionD,
+                "Correct Answer (A/B/C/D):", correct
+        };
+
+        int option = JOptionPane.showConfirmDialog(this, message, "Add Question", JOptionPane.OK_CANCEL_OPTION);
+        if (option == JOptionPane.OK_OPTION) {
+            String qText = questionField.getText();
+            String[] opts = new String[]{optionA.getText(), optionB.getText(), optionC.getText(), optionD.getText()};
+            String correctAns = correct.getText().toUpperCase();
+
+            // Validate
+            if (qText.isEmpty() || opts[0].isEmpty() || opts[1].isEmpty() || opts[2].isEmpty() || opts[3].isEmpty() ||
+                    !(correctAns.equals("A") || correctAns.equals("B") || correctAns.equals("C") || correctAns.equals("D"))) {
+                JOptionPane.showMessageDialog(this, "Please fill all fields correctly.");
+                return;
+            }
+
+            String rightAnswer = switch (correctAns) {
+                case "A" -> opts[0];
+                case "B" -> opts[1];
+                case "C" -> opts[2];
+                case "D" -> opts[3];
+                default -> "";
+            };
+
+            Question question = new Question(qText, opts, rightAnswer);
+            quizService.addQuestionToQuiz(course.getCourseId(), lesson.getLessonId(), question);
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+            model.addRow(new Object[]{
+                    model.getRowCount() + 1,
+                    question.getQuestionText(),
+                    question.getOptions()[0],
+                    question.getOptions()[1],
+                    question.getOptions()[2],
+                    question.getOptions()[3],
+                    question.getCorrectAnswer()
+            });
+          //loadQuiz();
+        }
+    }
+    private void saveQuiz() {quizService.addQuizToLesson(course.getCourseId(), lesson.getLessonId(), quiz);
+        JOptionPane.showMessageDialog(this, "Quiz saved successfully!");
     }
 
     /**
@@ -93,6 +167,12 @@ public class ManageQuiz extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         jButton3.setText("Add Question");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addQuestion();
+            }
+        });
+
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -143,7 +223,11 @@ public class ManageQuiz extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        saveQuiz();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+
+
 
     /**
      * @param args the command line arguments

@@ -3,18 +3,108 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package Frontend;
+
+import Backend.*;
+
+import javax.swing.*;
+import java.util.ArrayList;
+
 /**
  *
  * @author Rodina Mohamed
  */
 public class QuizPage extends javax.swing.JFrame {
+    /*private final ArrayList<Question> questions;
+    private Quiz quiz;
+    private int currentIndex = 0;
+    private int score = 0;
+    private  Question currentQuestion;
+    private String[] studentAnswers;*/
+    private QuizService quizService;
+    private Student student;
+    private Quiz quiz;
+    private StudentQuizAttempt attempt;
+    private int currentIndex = 0;
+    private Question currentQuestion;
+
+
 
     /**
      * Creates new form QuizPage
      */
-    public QuizPage() {
-        this.setLocationRelativeTo(null);
+    /*public QuizPage(Quiz quiz) {
+        this.quiz = quiz;
+        this.questions = quiz.getQuestions();
+        this.studentAnswers = new String[questions.size()];
         initComponents();
+        setupUI();
+        loadQuestion(0);
+        this.setLocationRelativeTo(null);
+    }*/
+    public QuizPage(Student student, Quiz quiz, QuizService quizService) {
+        this.student = student;
+        this.quiz = quiz;
+        this.quizService = quizService;
+
+        this.attempt = quizService.startAttempt(student, quiz);
+
+        initComponents();
+        setupUI();
+        loadQuestion(0);
+        this.setLocationRelativeTo(null);
+    }
+
+    private void setupUI() {
+        jButton1.setVisible(false);
+    }
+
+
+    /*private void loadQuestion(int index) {
+        if (index >= questions.size()) {
+            NextButton.setEnabled(false);
+            jButton1.setVisible(true);
+            return;
+        }*/
+    private void loadQuestion(int index) {
+        if (index >= quiz.getQuestions().size()) {
+            NextButton.setEnabled(false);
+            jButton1.setVisible(true);
+            return;
+        }
+        //currentQuestion = questions.get(index);
+        currentQuestion = quiz.getQuestions().get(index);
+        jLabel2.setText(currentQuestion.getQuestionText());
+
+        String[] opts = currentQuestion.getOptions();
+        jRadioButton1.setText(opts[0]);
+        jRadioButton2.setText(opts[1]);
+        jRadioButton3.setText(opts[2]);
+        jRadioButton4.setText(opts[3]);
+
+        jRadioButton1.setSelected(false);
+        jRadioButton2.setSelected(false);
+        jRadioButton3.setSelected(false);
+        jRadioButton4.setSelected(false);
+    }
+
+    /*private void checkAnswer() {
+        String selected = null;
+        if (jRadioButton1.isSelected()) selected = jRadioButton1.getText();
+        else if (jRadioButton2.isSelected()) selected = jRadioButton2.getText();
+        else if (jRadioButton3.isSelected()) selected = jRadioButton3.getText();
+        else if (jRadioButton4.isSelected()) selected = jRadioButton4.getText();
+
+        if (selected != null && selected.equals(currentQuestion.getCorrectAnswer())) {
+            score++;
+        }
+    }*/
+
+    private String getSelectedAnswer() {
+        if (jRadioButton1.isSelected()) return jRadioButton1.getText();
+        if (jRadioButton2.isSelected()) return jRadioButton2.getText();
+        if (jRadioButton3.isSelected()) return jRadioButton3.getText();
+        if (jRadioButton4.isSelected()) return jRadioButton4.getText();
+        return "";
     }
 
     /**
@@ -113,6 +203,7 @@ public class QuizPage extends javax.swing.JFrame {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
+
         });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -154,10 +245,40 @@ public class QuizPage extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+            /*checkAnswer();
+            JOptionPane.showMessageDialog(this,
+                    "Your score is: " + score + " out of " + questions.size());
+            this.dispose();*/
+
+        String selected = getSelectedAnswer();
+        quizService.submitAnswer(attempt, currentIndex, selected);
+
+        quizService.calculateScore(student, attempt, quiz);
+
+        String message = "Your score: " + attempt.getScore() + " out of " + quiz.getQuestions().size();
+        if (attempt.isPassed()) message += "\nCongratulations! You passed the quiz!";
+        else message += "\nYou did not pass. Try again!";
+
+        JOptionPane.showMessageDialog(this, message);
+        Course course = new CourseService().getCourseByLessonId(quiz.getLessonId());
+        if (course != null) {
+
+            ViewLessons lessonsPage = new ViewLessons(student, course.getCourseId());
+            lessonsPage.setVisible(true);
+        }
+
+        this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void NextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NextButtonActionPerformed
         // TODO add your handling code here:
+       /* checkAnswer();
+        currentIndex++;
+        loadQuestion(currentIndex);*/
+        String selected = getSelectedAnswer();
+        quizService.submitAnswer(attempt, currentIndex, selected);
+        currentIndex++;
+        loadQuestion(currentIndex);
     }//GEN-LAST:event_NextButtonActionPerformed
 
     private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
@@ -204,9 +325,9 @@ public class QuizPage extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+       java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new QuizPage().setVisible(true);
+             // new QuizPage().setVisible(true);
             }
         });
     }
@@ -222,4 +343,8 @@ public class QuizPage extends javax.swing.JFrame {
     private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JRadioButton jRadioButton4;
     // End of variables declaration//GEN-END:variables
+
+
+
+
 }

@@ -1,36 +1,51 @@
-[
-    {
-        "courseName": "English",
-        "students": [
-            101,
-            102
-        ],
-        "InstructorId": 100,
-        "courseId": "EEU",
-        "courseDescription": "rrrrr",
-        "status": "Approved",
-        "lessons": [
-            {
-                "lessonId": "AA",
-                "resources": ["z"],
-                "title": "kkk",
-                "content": "uu"
+[{
+    "courseName": "English",
+    "students": [
+        101,
+        102
+    ],
+    "InstructorId": 100,
+    "courseId": "EEU",
+    "courseDescription": "rrrrr",
+    "status": "Approved",
+    "lessons": [
+        {
+            "quiz": {
+                "quizId": "quiz_AA",
+                "questions": [
+                    {
+                        "options": [
+                            "R",
+                            "v",
+                            "G",
+                            "k"
+                        ],
+                        "correctAnswer": "R",
+                        "questionText": "RODINA"
+                    },
+                    {
+                        "options": [
+                            "k",
+                            "i",
+                            "E",
+                            "p"
+                        ],
+                        "correctAnswer": "E",
+                        "questionText": "ENGY"
+                    }
+                ],
+                "passPercentage": 50
             },
-            {
-                "lessonId": "LS7",
-                "resources": ["k"],
-                "title": "L3",
-                "content": "ddd"
-            }
-        ]
-    },
-    {
-        "courseName": "MATHS",
-        "students": [],
-        "InstructorId": 100,
-        "courseId": "MME",
-        "courseDescription": "II",
-        "status": "Pending",
-        "lessons": []
-    }
-]
+            "lessonId": "AA",
+            "resources": ["z"],
+            "title": "kkk",
+            "content": "uu"
+        },
+        {
+            "lessonId": "LS7",
+            "resources": ["k"],
+            "title": "L3",
+            "content": "ddd"
+        }
+    ]
+}]

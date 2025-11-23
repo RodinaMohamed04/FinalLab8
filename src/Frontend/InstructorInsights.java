@@ -47,6 +47,11 @@ Instructor instructor;
         jScrollPane1.setViewportView(jTable1);
 
         jButton1.setText("View Details");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Go back");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -98,6 +103,12 @@ Instructor instructor;
         dash.setVisible(true);
         this.setVisible(false); 
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        studentProgressChart sp= new studentProgressChart();
+        this.setVisible(false);
+        sp.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments

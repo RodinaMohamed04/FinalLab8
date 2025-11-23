@@ -44,6 +44,9 @@ public class QuizService {
         attempt.setScore(score);
         attempt.setPassed(quiz.isPassed(score));
 
+        UserService us = new UserService();
+        Student s = (Student) us.getUserbyID(student.getUserId());
+
         if (attempt.isPassed()) {
             Course course = courseService.getCourseByLessonId(quiz.getLessonId());
             if (course != null) {
@@ -51,7 +54,12 @@ public class QuizService {
                 String lessonId = quiz.getLessonId();
                 student.addLessonCompleted(courseId, lessonId);*/
                 student.addLessonCompleted(course.courseId, quiz.getLessonId());
-            }        }
+            }
+        }
+        //student.addQuizAttempt(attempt);
+        //UserService us = new UserService();
+        s.addQuizAttempt(attempt);
+        us.saveUsers();
     }
 
     // Get all attempts for a student
