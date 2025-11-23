@@ -1,0 +1,37 @@
+[
+    {
+        "Role": "instructor",
+        "Email": "rm@gmail.com",
+        "createdCourses": ["EEU"],
+        "ID": 100,
+        "Hash password": "58466ebdd352f801198118e294e38715f864985fd87977f348bfcd7db62e7c76",
+        "Name": "Rodina Mohamed"
+    },
+    {
+        "Role": "student",
+        "Email": "em@gmail.com",
+        "enrolledCourses": ["EEU"],
+        "progress": [{
+            "completedLessons": [
+                "AA",
+                "LS7"
+            ],
+            "courseId": "EEU"
+        }],
+        "ID": 101,
+        "Hash password": "84a47f61dd341ce731390149a904abcd58a6044263071abf44a475cf91563029",
+        "Name": "Engy mo"
+    },
+    {
+        "Role": "student",
+        "Email": "jm@hmail.com",
+        "enrolledCourses": ["EEU"],
+        "progress": [{
+            "completedLessons": ["AA"],
+            "courseId": "EEU"
+        }],
+        "ID": 102,
+        "Hash password": "9edc391f9b3e2cde722b0ee2fe0daab004191dac3fbf48c5cfb487b28d09c70e",
+        "Name": "Joe Mo"
+    }
+]

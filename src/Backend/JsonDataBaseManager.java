@@ -1,0 +1,265 @@
+package Backend;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+public class JsonDataBaseManager {
+
+    private static final String USERS_FILE = "users.json";
+    private static final String COURSES_FILE = "courses.json";
+
+    /// for users (save and read)
+    public static void save(ArrayList<User> x) {
+        JSONArray arr = new JSONArray();
+        for (User u : x) {
+            JSONObject j = new JSONObject();
+            j.put("Name", u.getUserName());
+            j.put("ID", u.getUserId());
+            j.put("Email", u.getEmail());
+            j.put("Hash password", u.getPasswordHash());
+            j.put("Role", u.getRole());
+
+            if (u instanceof Student) {
+                Student s = (Student) u;
+
+                // enrolled courses
+                JSONArray enrolled = new JSONArray();
+                for (String c : s.getEnrolledCourses()) {
+                    enrolled.put(c);
+                }
+                j.put("enrolledCourses", enrolled);
+
+                // progress
+                JSONArray progress = new JSONArray();
+                for (StudentCourseProgress p : s.getCoursesProgress()) {
+                    JSONObject pr = new JSONObject();
+                    pr.put("courseId", p.courseId);
+                    pr.put("completedLessons", new JSONArray(p.completedLessons));
+                    progress.put(pr);
+                }
+                j.put("progress", progress);
+            } else if (u instanceof Instructor) {
+                Instructor i = (Instructor) u;
+
+                JSONArray created = new JSONArray();
+                for (String cId : i.getCreatedCourses()) {
+                    created.put(cId);
+                }
+                j.put("createdCourses", created);
+            }
+            arr.put(j);
+
+        }
+        writeToFile(USERS_FILE, arr);
+    }
+
+    public static ArrayList<User> read() {
+        ArrayList<User> users = new ArrayList<>();
+
+        try {
+            if (!Files.exists(Paths.get(USERS_FILE))) return users;
+
+            String json = new String(Files.readAllBytes(Paths.get(USERS_FILE)));
+            JSONArray arr = new JSONArray(json);
+
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject j = arr.getJSONObject(i);
+
+                int id = j.getInt("ID");
+                String name = j.getString("Name");
+                String email = j.getString("Email");
+                String pass = j.getString("Hash password");
+                String role = j.getString("Role");
+
+                // ---------- Student ----------
+                /*if (role.equalsIgnoreCase("Student")) {
+                    Student s = new Student(name, id, email, pass);
+
+                    // load enrolled courses
+                    JSONArray enrolled = j.getJSONArray("enrolledCourses");
+                    for (int k = 0; k < enrolled.length(); k++) {
+                        s.addCourse(enrolled.getString(k));
+                    }
+
+                    // load progress
+                   JSONArray progress = j.getJSONArray("progress");
+                    for (int k = 0; k < progress.length(); k++) {
+                        JSONObject pr = progress.getJSONObject(k);
+                        String courseId = pr.getString("courseId");
+
+                        ArrayList<String> completed = new ArrayList<>();
+                        JSONArray c = pr.getJSONArray("completedLessons");
+                        for (int t = 0; t < c.length(); t++) {
+                            completed.add(c.getString(t));
+                        }
+
+                        s.addProgress(courseId, completed);
+                    }
+
+                    users.add(s);
+                }*/
+                if (role.equalsIgnoreCase("Student")) {
+                    Student s = new Student(name, id, email, pass);
+
+                    // 1) Load enrolledCourses ONLY (without creating empty progress)
+                    JSONArray enrolled = j.optJSONArray("enrolledCourses");
+                    if (enrolled != null) {
+                        ArrayList<String> enrolledList = new ArrayList<>();
+                        for (int k = 0; k < enrolled.length(); k++) {
+                            enrolledList.add(enrolled.getString(k));
+                        }
+                        s.setEnrolledCourses(enrolledList);
+                    }
+
+                    // 2) Load progress (actual data from JSON)
+                    JSONArray progress = j.optJSONArray("progress");
+                    if (progress != null) {
+                        for (int k = 0; k < progress.length(); k++) {
+                            JSONObject pr = progress.getJSONObject(k);
+
+                            String courseId = pr.getString("courseId");
+
+                            ArrayList<String> completed = new ArrayList<>();
+                            JSONArray c = pr.getJSONArray("completedLessons");
+                            for (int t = 0; t < c.length(); t++) {
+                                completed.add(c.getString(t));
+                            }
+
+                            s.addProgress(courseId, completed);
+                        }
+                    }
+
+                    users.add(s);
+                }
+
+
+                // ---------- Instructor ----------
+                else if (role.equalsIgnoreCase("Instructor")) {
+                    Instructor ins = new Instructor(name, id, email, pass);
+
+                    JSONArray created = j.getJSONArray("createdCourses");
+                    for (int k = 0; k < created.length(); k++) {
+                        ins.addCreatedCourseId(created.getString(k));
+                    }
+
+                    users.add(ins);
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error reading users.json");
+        }
+
+        return users;
+    }
+
+    // ==================== Helper ====================
+    private static void writeToFile(String filename, JSONArray arr) {
+        try {
+            FileWriter fw = new FileWriter(filename);
+            fw.write(arr.toString(4)); // pretty
+            fw.close();
+        } catch (IOException e) {
+            System.out.println("Error writing file");
+        }
+    }
+
+
+
+    /// /// courses and lessons save and read
+
+    public static void saveCourse(ArrayList<Course> courses)
+    {
+        JSONArray arr = new JSONArray();
+        for (Course c : courses) {
+            JSONObject j = new JSONObject();
+
+            j.put("courseId", c.getCourseId());
+            j.put("courseName", c.getCourseName());
+            j.put("courseDescription", c.getCourseDescription());
+            j.put("InstructorId", c.getInstructorId());
+
+            JSONArray studentArr = new JSONArray();
+            for (Student s : c.getStudents()) {
+                studentArr.put(s.getUserId());
+
+            }
+            j.put("students", studentArr);
+
+            JSONArray lessonArr = new JSONArray();
+            for (Lesson l : c.getLessons()) {
+                JSONObject jl = new JSONObject();
+                jl.put("lessonId", l.getLessonId());
+                jl.put("title", l.getTitle());
+                jl.put("content", l.getContent());
+
+                JSONArray resArr = new JSONArray(l.getResources());
+                jl.put("resources", resArr);
+
+                lessonArr.put(jl);
+            }
+            j.put("lessons", lessonArr);
+
+            arr.put(j);
+        }
+
+        writeToFile(COURSES_FILE, arr);
+    }
+
+    public static  ArrayList<Course> readCourse()
+    {
+        ArrayList<Course> courses = new ArrayList<>();
+
+        try {
+            if (!Files.exists(Paths.get(COURSES_FILE))) return courses;
+
+            String json = new String(Files.readAllBytes(Paths.get(COURSES_FILE)));
+            JSONArray arr = new JSONArray(json);
+
+            for (int i = 0; i < arr.length(); i++) {
+                JSONObject j = arr.getJSONObject(i);
+
+                String courseId = j.getString("courseId");
+                String courseName = j.getString("courseName");
+                String courseDescription = j.getString("courseDescription");
+                int instructorId = j.getInt("InstructorId");
+
+                Course c = new Course(courseId, courseName, courseDescription, instructorId);
+
+                JSONArray studentArr = j.getJSONArray("students");
+
+                for (int k = 0; k < studentArr.length(); k++) {
+                    int studentId = studentArr.getInt(k);
+
+                    c.getStudents().add(new Student("temp",studentId,"temp","temp"));
+
+                }
+                JSONArray lessonArr = j.getJSONArray("lessons");
+                for (int k = 0; k < lessonArr.length(); k++) {
+                    JSONObject jl = lessonArr.getJSONObject(k);
+
+                    Lesson l  = new Lesson(jl.getString("lessonId"), jl.getString("title"), jl.getString("content"));
+
+                    JSONArray resArr = jl.getJSONArray("resources");
+                    for (int t = 0; t < resArr.length(); t++) {
+                        l.getResources().add(resArr.getString(t));
+                    }
+
+                    c.getLessons().add(l);
+                }
+
+                courses.add(c);
+            }
+        }
+        catch (Exception e){
+            System.out.println("Error reading courses.json");
+        }
+        return courses;
+    }
+}
