@@ -71,7 +71,7 @@ public class ManageLessons extends javax.swing.JFrame {
         EditLesson = new javax.swing.JButton();
         DeleteLesson = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        Quiz = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -120,10 +120,10 @@ public class ManageLessons extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("Manage Quiz");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        Quiz.setText("Manage Quiz");
+        Quiz.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                QuizActionPerformed(evt);
             }
         });
 
@@ -150,7 +150,7 @@ public class ManageLessons extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jButton1)
                                 .addGap(92, 92, 92)
-                                .addComponent(jButton2)))))
+                                .addComponent(Quiz)))))
                 .addContainerGap(68, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -163,7 +163,7 @@ public class ManageLessons extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(Quiz))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(EditLesson)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -229,9 +229,23 @@ public class ManageLessons extends javax.swing.JFrame {
             this.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void QuizActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_QuizActionPerformed
+         int selectedRow = jTable1.getSelectedRow();
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "Please select a lesson to manage its quiz!", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    String lessonId = jTable1.getValueAt(selectedRow, 0).toString();
+    Lesson selectedLesson = cs.getLessonById(course.getCourseId(), lessonId);
+    if (selectedLesson != null) {
+        ManageQuiz mq = new ManageQuiz(instructor, course, selectedLesson);
+        mq.setVisible(true);
+        this.setVisible(false);
+    } else {
+        JOptionPane.showMessageDialog(this, "Lesson not found!", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_QuizActionPerformed
 
     /**
      * @param args the command line arguments
@@ -241,8 +255,8 @@ public class ManageLessons extends javax.swing.JFrame {
     private javax.swing.JButton Back;
     private javax.swing.JButton DeleteLesson;
     private javax.swing.JButton EditLesson;
+    private javax.swing.JButton Quiz;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;

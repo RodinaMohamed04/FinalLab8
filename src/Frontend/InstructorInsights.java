@@ -73,9 +73,9 @@ Instructor instructor;
                         .addGap(185, 185, 185)
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(109, 109, 109)
+                        .addGap(99, 99, 99)
                         .addComponent(jButton1)
-                        .addGap(123, 123, 123)
+                        .addGap(119, 119, 119)
                         .addComponent(jButton2)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
