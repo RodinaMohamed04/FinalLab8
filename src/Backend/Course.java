@@ -18,8 +18,9 @@ public class Course {
         this.instructorId = instructorId;
         this.students = new ArrayList<>();
         this.lessons = new ArrayList<>();
-        this.status = "Pending";
+       this.status = "Pending";
     }
+
 
     public String getCourseId() {
         return courseId;

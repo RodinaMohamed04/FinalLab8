@@ -10,6 +10,7 @@
     {
         "Role": "student",
         "Email": "em@gmail.com",
+        "quizAttempts": [],
         "enrolledCourses": ["EEU"],
         "progress": [{
             "completedLessons": [
@@ -25,6 +26,7 @@
     {
         "Role": "student",
         "Email": "jm@hmail.com",
+        "quizAttempts": [],
         "enrolledCourses": ["EEU"],
         "progress": [{
             "completedLessons": ["AA"],
@@ -33,5 +35,30 @@
         "ID": 102,
         "Hash password": "9edc391f9b3e2cde722b0ee2fe0daab004191dac3fbf48c5cfb487b28d09c70e",
         "Name": "Joe Mo"
+    },
+    {
+        "Role": "instructor",
+        "Email": "gm@gmail.com",
+        "createdCourses": [],
+        "ID": 103,
+        "Hash password": "a474219e5e9503c84d59500bb1bda3d9ade81e52d9fa1c234278770892a6dd74",
+        "Name": "g m"
+    },
+    {
+        "Role": "student",
+        "Email": "ghm@gmail.com",
+        "quizAttempts": [],
+        "enrolledCourses": [],
+        "progress": [],
+        "ID": 104,
+        "Hash password": "7b84e9f7fb28ba86a73f6ccb3c117c0aa172ad24fa35d1c8093a5fdd72f22448",
+        "Name": "gh m"
+    },
+    {
+        "Role": "admin",
+        "Email": "gh@gmail.com",
+        "ID": 105,
+        "Hash password": "fb2b7fce0940161406a6aa3e4d8b4aa6104014774ffa665743f8d9704f0eb0ec",
+        "Name": "Ghadeer g"
     }
 ]

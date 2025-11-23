@@ -249,8 +249,8 @@ public class Login extends javax.swing.JFrame {
             in.setVisible(true);
         }
         else{
-           // AdminDashboard ad = new AdminDashboard();
-          //  ad.setVisible(true);
+           AdminDashboard ad = new AdminDashboard();
+          ad.setVisible(true);
         }
 
         this.setVisible(false);

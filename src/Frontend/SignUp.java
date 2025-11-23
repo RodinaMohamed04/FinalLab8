@@ -278,13 +278,13 @@ public class SignUp extends javax.swing.JFrame {
                 in.setVisible(true);
                 this.setVisible(false);
             }
-           /* else{
+           else{
                 Admin a = new Admin(fullname, email, Backend.User.hashy(password));
                 userService.addUser(a);
-                AdminDashBoard ad = new AdminDashBoard(a);
+                AdminDashboard ad = new AdminDashboard();
                 ad.setVisible(true);
                 this.setVisible(false);
-            }*/
+            }
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
