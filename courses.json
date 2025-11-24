@@ -42,6 +42,20 @@
             "content": "uu"
         },
         {
+            "quiz": {
+                "quizId": "quiz_LS7",
+                "questions": [{
+                    "options": [
+                        "L",
+                        "G",
+                        "N",
+                        "M"
+                    ],
+                    "correctAnswer": "G",
+                    "questionText": "GO"
+                }],
+                "passPercentage": 50
+            },
             "lessonId": "LS7",
             "resources": ["k"],
             "title": "L3",

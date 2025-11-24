@@ -13,20 +13,39 @@
     {
         "Role": "student",
         "Email": "em@gmail.com",
-        "quizAttempts": [{
-            "score": 2,
-            "isPassed": true,
-            "quizId": "quiz_AA",
-            "answers": [
-                "R",
-                "E",
-                "E"
-            ]
+        "quizAttempts": [
+            {
+                "score": 2,
+                "isPassed": true,
+                "quizId": "quiz_AA",
+                "answers": [
+                    "R",
+                    "E",
+                    "E"
+                ]
+            },
+            {
+                "score": 1,
+                "isPassed": true,
+                "quizId": "quiz_LS7",
+                "answers": [
+                    "G",
+                    "G"
+                ]
+            }
+        ],
+        "certificates": [{
+            "studentId": 101,
+            "certificateId": "CERT-1763967773033",
+            "issueDate": "2025-11-24",
+            "courseId": "EEU"
         }],
-        "certificates": [],
         "enrolledCourses": ["EEU"],
         "progress": [{
-            "completedLessons": ["AA"],
+            "completedLessons": [
+                "AA",
+                "LS7"
+            ],
             "courseId": "EEU"
         }],
         "ID": 101,

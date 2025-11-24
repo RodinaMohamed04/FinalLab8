@@ -4,13 +4,8 @@
  */
 package Frontend;
 
-import Backend.Course;
-import Backend.CourseService;
-import Backend.Instructor;
-import Backend.JsonDataBaseManager;
-import Backend.Student;
-import Backend.StudentCourseProgress;
-import Backend.User;
+import Backend.*;
+
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import org.jfree.chart.ChartFactory;
@@ -39,12 +34,40 @@ public class studentProgressChart extends javax.swing.JFrame {
 
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         CourseService cs = new CourseService();
+        UserService us = new UserService();
 
-        for (String courseId : instructor.getCreatedCourses()) {
+       /* for (String courseId : instructor.getCreatedCourses()) {
             Course course = cs.getCourseById(courseId);
             if (course == null) continue;
 
             ArrayList<Student> students = course.getStudents();
+            int totalLessons = course.getLessons().size();
+            double avgCompletion = 0;
+
+            if (!students.isEmpty() && totalLessons > 0) {
+                int completedTotal = 0;
+                for (Student s : students) {
+                    StudentCourseProgress progress = s.getProgressForCourse(courseId);
+                    if (progress != null) completedTotal += progress.getCompletedLessons().size();
+                }
+                avgCompletion = (double) completedTotal / (students.size() * totalLessons) * 100;
+            }
+            dataset.addValue(avgCompletion, "Progress %", course.getCourseName());
+        }*/
+        for (String courseId : instructor.getCreatedCourses()) {
+            Course course = cs.getCourseById(courseId);
+            if (course == null) continue;
+
+            ArrayList<Student> students = new ArrayList<>();
+
+            for (User u : us.getAllUsers()) {
+                if (u instanceof Student s) {
+                    if (s.getEnrolledCourses().contains(courseId)) {
+                        students.add(s);
+                    }
+                }
+            }
+
             int totalLessons = course.getLessons().size();
             double avgCompletion = 0;
 

@@ -4,12 +4,8 @@
  */
 package Frontend;
 
-import Backend.Course;
-import Backend.CourseService;
-import Backend.Instructor;
-import Backend.Lesson;
-import Backend.Student;
-import Backend.StudentQuizAttempt;
+import Backend.*;
+
 import java.awt.BorderLayout;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -35,6 +31,7 @@ public class LessonQuizAverageChart extends javax.swing.JFrame {
     private void createChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         CourseService cs = new CourseService();
+        UserService us = new UserService();
 
         for (String courseId : instructor.getCreatedCourses()) {
             Course c = cs.getCourseById(courseId);
@@ -45,14 +42,26 @@ public class LessonQuizAverageChart extends javax.swing.JFrame {
                 double totalScore = 0;
                 int count = 0;
 
-                for (Student s : c.getStudents()) {
+                for (int studentId : c.getStudents().stream().map(Student::getUserId).toList()) {
+                    Student s = (Student) us.getUserbyID(studentId);
+                    if (s == null) continue;
+
+                    for (StudentQuizAttempt a : s.getQuizAttempts()) {
+                        if (a.getQuizId().equalsIgnoreCase(l.getQuiz().getQuizId())) {
+                            totalScore += a.getScore();
+                            count++;
+                        }
+                    }
+                }
+
+               /* for (Student s : c.getStudents()) {
                     for (StudentQuizAttempt a : s.getQuizAttempts()) {
                         if (a.getQuizId().equals(l.getQuiz().getQuizId())) {
                             totalScore += a.getScore();
                             count++;
                         }
                     }
-                }
+                }*/
 
                 double avg = count == 0 ? 0 : totalScore / count;
                 dataset.addValue(avg, "Average Score", l.getTitle());
