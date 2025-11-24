@@ -27,6 +27,21 @@ public class Student extends User {
             coursesProgress.add(new StudentCourseProgress(courseId));
         }
     }
+    /*public void addCourse(String courseID) {
+        enrolledCourses.add(courseID);
+
+        boolean exists = false;
+        for (StudentCourseProgress p : coursesProgress) {
+            if (p.getCourseId().equals(courseID)) {
+                exists = true;
+                break;
+            }
+        }
+
+        if (!exists) {
+            coursesProgress.add(new StudentCourseProgress(courseID));
+        }
+    }*/
 
     // Add full progress (used by JSON loader)
     public void addProgress(String courseId, ArrayList<String> completedLessons) {

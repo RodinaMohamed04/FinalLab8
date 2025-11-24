@@ -25,7 +25,10 @@
         }],
         "certificates": [],
         "enrolledCourses": ["EEU"],
-        "progress": [],
+        "progress": [{
+            "completedLessons": ["AA"],
+            "courseId": "EEU"
+        }],
         "ID": 101,
         "Hash password": "84a47f61dd341ce731390149a904abcd58a6044263071abf44a475cf91563029",
         "Name": "Engy mo"
@@ -33,10 +36,34 @@
     {
         "Role": "student",
         "Email": "jm@hmail.com",
-        "quizAttempts": [],
+        "quizAttempts": [
+            {
+                "score": 0,
+                "isPassed": false,
+                "quizId": "quiz_AA",
+                "answers": [
+                    "k",
+                    "p",
+                    "p"
+                ]
+            },
+            {
+                "score": 1,
+                "isPassed": true,
+                "quizId": "quiz_AA",
+                "answers": [
+                    "R",
+                    "",
+                    "E"
+                ]
+            }
+        ],
         "certificates": [],
         "enrolledCourses": ["EEU"],
-        "progress": [],
+        "progress": [{
+            "completedLessons": ["AA"],
+            "courseId": "EEU"
+        }],
         "ID": 102,
         "Hash password": "9edc391f9b3e2cde722b0ee2fe0daab004191dac3fbf48c5cfb487b28d09c70e",
         "Name": "Joe Mo"

@@ -255,14 +255,33 @@ public class QuizPage extends javax.swing.JFrame {
 
         quizService.calculateScore(student, attempt, quiz);
 
-        String message = "Your score: " + attempt.getScore() + " out of " + quiz.getQuestions().size();
-        if (attempt.isPassed()) message += "\nCongratulations! You passed the quiz!";
+       // String message = "Your score: " + attempt.getScore() + " out of " + quiz.getQuestions().size();
+        /*if (attempt.isPassed()) message += "\nCongratulations! You passed the quiz!";
         else message += "\nYou did not pass. Try again!";
 
         JOptionPane.showMessageDialog(this, message);
         Course course = new CourseService().getCourseByLessonId(quiz.getLessonId());
         if (course != null) {
 
+            ViewLessons lessonsPage = new ViewLessons(student, course.getCourseId());
+            lessonsPage.setVisible(true);
+        }*/
+
+        if (attempt.isPassed()) {
+            Course course = new CourseService().getCourseByLessonId(quiz.getLessonId());
+            if (course != null) {
+                new UserService().markLessonCompleted(student.getUserId(), course.getCourseId(), quiz.getLessonId());
+            }
+        }
+
+        String message = "Your score: " + attempt.getScore() + " out of " + quiz.getQuestions().size();
+        if (attempt.isPassed()) message += "\nCongratulations! You passed the quiz!";
+        else message += "\nYou did not pass. Try again!";
+
+        JOptionPane.showMessageDialog(this, message);
+
+        Course course = new CourseService().getCourseByLessonId(quiz.getLessonId());
+        if (course != null) {
             ViewLessons lessonsPage = new ViewLessons(student, course.getCourseId());
             lessonsPage.setVisible(true);
         }
