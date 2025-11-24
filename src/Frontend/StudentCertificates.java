@@ -1,11 +1,14 @@
 package Frontend;
 
 import Backend.Certificate;
+import Backend.JsonDataBaseManager;
 import Backend.Student;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.io.FileWriter;
+
+import Backend.User;
 import org.json.JSONObject;
 
 
@@ -39,10 +42,27 @@ private ArrayList<Certificate> certificates;
             });
         }
     }
+
+    private void loadStudentCertificates() {
+        // reload users from JSON
+        ArrayList<User> users = JsonDataBaseManager.read();
+
+        // find the student by ID
+        for (User u : users) {
+            if (u instanceof Student s && s.getUserId() == student.getUserId()) {
+                this.certificates = s.getCertificates();
+                break;
+            }
+        }
+
+        // reload the table
+        loadCertificates();
+    }
  // update with new generated certificates
    public void reloadCertificates(Student student) {
-    this.certificates = student.getCertificates(); 
-    loadCertificates(); 
+  //  this.certificates = student.getCertificates();
+  //  loadCertificates();
+       loadStudentCertificates();
 }
 private void downloadCertificate(Certificate cert){
  try {
