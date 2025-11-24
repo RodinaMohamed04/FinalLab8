@@ -4,6 +4,9 @@
  */
 package Frontend;
 
+import Backend.Course;
+import Backend.CourseService;
+import Backend.Instructor;
 import Backend.JsonDataBaseManager;
 import Backend.Student;
 import Backend.StudentCourseProgress;
@@ -24,48 +27,40 @@ public class studentProgressChart extends javax.swing.JFrame {
     /**
      * Creates new form studentProgressChart
      */
-    public studentProgressChart() {
+    Instructor instructor;
+    public studentProgressChart(Instructor instructor) {
+        this.instructor = instructor;
         initComponents();
         createProgressChart();
+        setLocationRelativeTo(null);
     }
 
     private void createProgressChart() {
 
-        ArrayList<User> users = JsonDataBaseManager.read();
-
-        Student student = null;
-
-        for (User u : users) {
-            if (u instanceof Student) {
-                student = (Student) u;
-                break;
-            }
-        }
-
-        if (student == null) {
-            System.out.println("No student found!");
-            return;
-        }
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+        CourseService cs = new CourseService();
 
-        for (StudentCourseProgress p : student.getCoursesProgress()) {
+        for (String courseId : instructor.getCreatedCourses()) {
+            Course course = cs.getCourseById(courseId);
+            if (course == null) continue;
 
-            String courseId = p.getCourseId();
-            int completedLessons = p.getCompletedLessons().size();
+            ArrayList<Student> students = course.getStudents();
+            int totalLessons = course.getLessons().size();
+            double avgCompletion = 0;
 
-            int totalLessons = getTotalLessonsForCourse(courseId);
-
-            double progressPercent = 0;
-            if (totalLessons >= 1) {
-                progressPercent = (completedLessons * 100.0) / totalLessons;
+            if (!students.isEmpty() && totalLessons > 0) {
+                int completedTotal = 0;
+                for (Student s : students) {
+                    StudentCourseProgress progress = s.getProgressForCourse(courseId);
+                    if (progress != null) completedTotal += progress.getCompletedLessons().size();
+                }
+                avgCompletion = (double) completedTotal / (students.size() * totalLessons) * 100;
             }
-
-            dataset.addValue(progressPercent, "Progress %", courseId);
+            dataset.addValue(avgCompletion, "Progress %", course.getCourseName());
         }
-
 
         JFreeChart chart = ChartFactory.createBarChart(
-                "Student Progress",
+                "Student Progress per Course",
                 "Course",
                 "Progress (%)",
                 dataset,
@@ -73,22 +68,10 @@ public class studentProgressChart extends javax.swing.JFrame {
                 true, true, false
         );
 
-        ChartPanel chartP = new ChartPanel(chart);
+        ChartPanel cp = new ChartPanel(chart);
         chartPanel.setLayout(new BorderLayout());
-        chartPanel.add(chartP, BorderLayout.CENTER);
+        chartPanel.add(cp, BorderLayout.CENTER);
         chartPanel.validate();
-    }
-
-    private int getTotalLessonsForCourse(String courseId) {
-        ArrayList<Backend.Course> courses = JsonDataBaseManager.readCourse();
-
-        for (Backend.Course c : courses) {
-            if (c.getCourseId().equals(courseId)) {
-                return c.getLessons().size();
-            }
-        }
-
-        return 0;
     }
 
     /**
@@ -165,7 +148,7 @@ public class studentProgressChart extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new studentProgressChart().setVisible(true);
+                //new studentProgressChart().setVisible(true);
             }
         });
     }

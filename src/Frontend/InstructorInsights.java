@@ -4,12 +4,62 @@
  */
 package Frontend;
 
+import Backend.Course;
+import Backend.CourseService;
 import Backend.Instructor;
+import Backend.Lesson;
+import Backend.Student;
+import Backend.StudentCourseProgress;
+import java.util.ArrayList;
+import javax.swing.table.DefaultTableModel;
 
 public class InstructorInsights extends javax.swing.JFrame {
-Instructor instructor;
-    public InstructorInsights() {
+
+    Instructor instructor;
+
+    public InstructorInsights(Instructor instructor) {
+        this.instructor = instructor;
         initComponents();
+        loadCoursesTable();
+        this.setLocationRelativeTo(null);
+    }
+
+    private void loadCoursesTable() {
+        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+        model.setRowCount(0);
+
+        CourseService cs = new CourseService();
+
+        for (String courseId : instructor.getCreatedCourses()) {
+            Course c = cs.getCourseById(courseId);
+            if (c == null) continue;
+
+            double completion = calculateCourseCompletion(c);
+
+            model.addRow(new Object[]{
+                c.getCourseId(),
+                c.getCourseName(),
+                c.getStatus(),
+                String.format("%.2f%%", completion)
+            });
+        }
+    }
+
+    // --- Calculate completion for all students ---
+    private double calculateCourseCompletion(Course course) {
+        ArrayList<Student> students = course.getStudents();
+        int totalLessons = course.getLessons().size();
+        if (totalLessons == 0 || students.isEmpty()) return 0;
+
+        int completedLessonsTotal = 0;
+        for (Student s : students) {
+            StudentCourseProgress progress = s.getProgressForCourse(course.getCourseId());
+            if (progress != null) {
+                completedLessonsTotal += progress.getCompletedLessons().size();
+            }
+        }
+
+        return (double) completedLessonsTotal / (students.size() * totalLessons) * 100;
     }
 
     /**
@@ -26,6 +76,8 @@ Instructor instructor;
         jTable1 = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -46,7 +98,7 @@ Instructor instructor;
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        jButton1.setText("View Details");
+        jButton1.setText("Progress Chart");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -57,6 +109,20 @@ Instructor instructor;
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Status Chart");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton4.setText("lesson Quiz Avg Chart");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
             }
         });
 
@@ -75,9 +141,13 @@ Instructor instructor;
                         .addComponent(jLabel1))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(99, 99, 99)
-                        .addComponent(jButton1)
-                        .addGap(119, 119, 119)
-                        .addComponent(jButton2)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(79, 79, 79)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton4)
+                            .addComponent(jButton2))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -90,8 +160,12 @@ Instructor instructor;
                 .addGap(53, 53, 53)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton3)
                     .addComponent(jButton2))
-                .addContainerGap(64, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         pack();
@@ -99,16 +173,28 @@ Instructor instructor;
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-         InstructorDashBoard dash = new InstructorDashBoard(instructor);
+        InstructorDashBoard dash = new InstructorDashBoard(instructor);
         dash.setVisible(true);
-        this.setVisible(false); 
+        this.setVisible(false);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        studentProgressChart sp= new studentProgressChart();
+        studentProgressChart sp = new studentProgressChart(instructor);
         this.setVisible(false);
         sp.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        StatusCharts sc = new StatusCharts(instructor);
+        this.setVisible(false);
+        sc.setVisible(true);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    LessonQuizAverageChart lqac = new LessonQuizAverageChart(instructor);
+    lqac.setVisible(true);
+    this.setVisible(false);
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -140,7 +226,7 @@ Instructor instructor;
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new InstructorInsights().setVisible(true);
+                //new InstructorInsights().setVisible(true);
             }
         });
     }
@@ -148,6 +234,8 @@ Instructor instructor;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;

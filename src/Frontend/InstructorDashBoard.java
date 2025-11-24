@@ -155,7 +155,7 @@ public class InstructorDashBoard extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void Create1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Create1ActionPerformed
-        InstructorInsights ii = new InstructorInsights();
+        InstructorInsights ii = new InstructorInsights(instructor);
         ii.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_Create1ActionPerformed

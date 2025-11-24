@@ -6,51 +6,63 @@ package Frontend;
 
 import Backend.Course;
 import Backend.CourseService;
+import Backend.Instructor;
+import Backend.Lesson;
+import Backend.Student;
+import Backend.StudentQuizAttempt;
+import java.awt.BorderLayout;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
-import Backend.CourseStats;
-import Backend.Instructor;
-import java.awt.BorderLayout;
 
 /**
  *
  * @author mo
  */
-public class StatusCharts extends javax.swing.JFrame {
+public class LessonQuizAverageChart extends javax.swing.JFrame {
 
     /**
-     * Creates new form Charts
+     * Creates new form LessonQuizAverageChart
      */
     Instructor instructor;
-    public StatusCharts(Instructor instructor) {
+    public LessonQuizAverageChart(Instructor instructor) {
+        this.instructor = instructor;
         initComponents();
-        setLocationRelativeTo(null);
         createChart();
-        CourseStats stats = new CourseStats();
+        this.setLocationRelativeTo(null);
     }
-       private void createChart() {
+    private void createChart() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         CourseService cs = new CourseService();
 
-        int approved = 0, pending = 0, rejected = 0;
-        for (Course c : cs.getAllCourses()) {
-            switch (c.getStatus()) {
-                case "Approved" -> approved++;
-                case "Pending" -> pending++;
-                case "Rejected" -> rejected++;
+        for (String courseId : instructor.getCreatedCourses()) {
+            Course c = cs.getCourseById(courseId);
+            if (c == null) continue;
+
+            for (Lesson l : c.getLessons()) {
+                if (l.getQuiz() == null) continue;
+                double totalScore = 0;
+                int count = 0;
+
+                for (Student s : c.getStudents()) {
+                    for (StudentQuizAttempt a : s.getQuizAttempts()) {
+                        if (a.getQuizId().equals(l.getQuiz().getQuizId())) {
+                            totalScore += a.getScore();
+                            count++;
+                        }
+                    }
+                }
+
+                double avg = count == 0 ? 0 : totalScore / count;
+                dataset.addValue(avg, "Average Score", l.getTitle());
             }
         }
 
-        dataset.addValue(approved, "Courses", "Approved");
-        dataset.addValue(pending, "Courses", "Pending");
-        dataset.addValue(rejected, "Courses", "Rejected");
-
         JFreeChart chart = ChartFactory.createBarChart(
-                "Courses Status Overview",
-                "Status",
-                "Count",
+                "Quiz Average per Lesson",
+                "Lesson",
+                "Average Score",
                 dataset,
                 org.jfree.chart.plot.PlotOrientation.VERTICAL,
                 true, true, false
@@ -61,7 +73,6 @@ public class StatusCharts extends javax.swing.JFrame {
         chartPanel.add(cp, BorderLayout.CENTER);
         chartPanel.validate();
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -79,11 +90,11 @@ public class StatusCharts extends javax.swing.JFrame {
         chartPanel.setLayout(chartPanelLayout);
         chartPanelLayout.setHorizontalGroup(
             chartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 342, Short.MAX_VALUE)
+            .addGap(0, 328, Short.MAX_VALUE)
         );
         chartPanelLayout.setVerticalGroup(
             chartPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 254, Short.MAX_VALUE)
+            .addGap(0, 288, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -91,16 +102,16 @@ public class StatusCharts extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(29, 29, 29)
+                .addGap(38, 38, 38)
                 .addComponent(chartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addComponent(chartPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(chartPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -123,25 +134,23 @@ public class StatusCharts extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(StatusCharts.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LessonQuizAverageChart.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(StatusCharts.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LessonQuizAverageChart.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(StatusCharts.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LessonQuizAverageChart.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(StatusCharts.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(LessonQuizAverageChart.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-              //  new StatusCharts().setVisible(true);
+              //  new LessonQuizAverageChart(instructor).setVisible(true);
             }
         });
     }
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel chartPanel;
